@@ -1,0 +1,932 @@
+{
+ "schema": "dash-feed/1",
+ "project": {
+  "name": "sample build",
+  "now": "2026-09-20T12:00:00Z",
+  "head": "a942e69",
+  "tags": [
+   "m1"
+  ],
+  "focus": "M2",
+  "seeded": "2026-09-17T09:00:00Z",
+  "gate": {
+   "time": "2026-09-20T10:40:00Z",
+   "subject": "t22",
+   "passed": true,
+   "steps": [
+    "pass",
+    "pass",
+    "pass",
+    "pass",
+    "pass",
+    "pass",
+    "pass"
+   ],
+   "acceptance": 120
+  },
+  "run": {
+   "start": "2026-09-20T08:00:00Z",
+   "end": "2026-09-20T18:00:00Z"
+  },
+  "last_activity": "2026-09-20T11:29:00Z",
+  "walks": [
+   {
+    "name": "2026-09-20T1100Z-operator-walk-fixture",
+    "task": "",
+    "start": "2026-09-20T11:00:00Z",
+    "end": null,
+    "depth": "",
+    "stages": {},
+    "notes": 0,
+    "last": "",
+    "verdict": "PASS"
+   }
+  ],
+  "gates": [
+   {
+    "time": "2026-09-20T09:55:00Z",
+    "subject": "t22",
+    "passed": false,
+    "steps": [
+     "pass",
+     "pass",
+     "pass",
+     "pass",
+     "fail",
+     "fail",
+     "pass"
+    ],
+    "acceptance": 118
+   },
+   {
+    "time": "2026-09-20T10:40:00Z",
+    "subject": "t22",
+    "passed": true,
+    "steps": [
+     "pass",
+     "pass",
+     "pass",
+     "pass",
+     "pass",
+     "pass",
+     "pass"
+    ],
+    "acceptance": 120
+   }
+  ],
+  "blocker_rows": [
+   {
+    "id": "",
+    "task": "t23",
+    "milestone": "M2",
+    "kind": "",
+    "who": "",
+    "since": "",
+    "text": "t23: the report test fails on the column order; class (b), the builder was re-briefed once. More text.",
+    "opened": "2026-09-17T09:00:00Z",
+    "closed": null
+   }
+  ]
+ },
+ "milestones": [
+  {
+   "id": "M1",
+   "title": "Core platform",
+   "purpose": "The core reads a file and writes a record.",
+   "planned": {
+    "start": "2026-09-18T09:00:00Z",
+    "end": "2026-09-18T10:33:00Z"
+   },
+   "actual": {
+    "start": "2026-09-18T09:00:00Z",
+    "end": "2026-09-18T15:00:00Z"
+   },
+   "tasks": [
+    "t10",
+    "t11",
+    "t19"
+   ],
+   "state": "done",
+   "minutes": 93.0,
+   "blockers": 0
+  },
+  {
+   "id": "M2",
+   "title": "Model and the first model",
+   "purpose": "The model trains on the tiles and the first model is exported.",
+   "planned": {
+    "start": "2026-09-19T12:00:00Z",
+    "end": "2026-09-19T14:07:00Z"
+   },
+   "actual": {
+    "start": "2026-09-19T12:00:00Z",
+    "end": null
+   },
+   "tasks": [
+    "t20",
+    "t21",
+    "t22",
+    "t23",
+    "t24",
+    "t25",
+    "t29"
+   ],
+   "state": "healing",
+   "minutes": 127.0,
+   "blockers": 1
+  },
+  {
+   "id": "M3",
+   "title": "Hand over",
+   "purpose": "The operator runs the program alone.",
+   "planned": {
+    "start": "2026-09-20T13:01:00Z",
+    "end": "2026-09-20T14:34:00Z"
+   },
+   "actual": {
+    "start": null,
+    "end": null
+   },
+   "tasks": [
+    "t30",
+    "t31",
+    "t39"
+   ],
+   "state": "waiting",
+   "minutes": 93.0,
+   "blockers": 0
+  }
+ ],
+ "tasks": [
+  {
+   "id": "t10",
+   "name": "core",
+   "short": "core.py",
+   "purpose": "check 10 passes on Linux.",
+   "milestone": "M1",
+   "wave": 1,
+   "lane": "cpu",
+   "state": "done",
+   "depends": [],
+   "outputs": [
+    "src/app/core.py"
+   ],
+   "elapsed": null,
+   "started": null,
+   "merged": "2026-09-18T09:00:00Z",
+   "added": "2026-09-17T09:00:00Z",
+   "why": "",
+   "review": false
+  },
+  {
+   "id": "t11",
+   "name": "io",
+   "short": "io.py",
+   "purpose": "check 11 passes.",
+   "milestone": "M1",
+   "wave": 2,
+   "lane": "cpu",
+   "state": "done",
+   "depends": [
+    "t10"
+   ],
+   "outputs": [
+    "src/app/io.py"
+   ],
+   "elapsed": null,
+   "started": null,
+   "merged": "2026-09-18T11:00:00Z",
+   "added": "2026-09-17T09:00:00Z",
+   "why": "",
+   "review": false
+  },
+  {
+   "id": "t19",
+   "name": "review",
+   "short": "review",
+   "purpose": "The review of M1 passes.",
+   "milestone": "M1",
+   "wave": 3,
+   "lane": "cpu",
+   "state": "done",
+   "depends": [
+    "t10",
+    "t11"
+   ],
+   "outputs": [
+    "reviews/M1.md"
+   ],
+   "elapsed": null,
+   "started": null,
+   "merged": "2026-09-18T15:00:00Z",
+   "added": "2026-09-17T09:00:00Z",
+   "why": "",
+   "review": true
+  },
+  {
+   "id": "t20",
+   "name": "model/",
+   "short": "__init__.py",
+   "purpose": "check 20 passes.",
+   "milestone": "M2",
+   "wave": 1,
+   "lane": "cpu",
+   "state": "done",
+   "depends": [
+    "t19"
+   ],
+   "outputs": [
+    "src/app/model/__init__.py"
+   ],
+   "elapsed": null,
+   "started": null,
+   "merged": "2026-09-19T12:00:00Z",
+   "added": "2026-09-17T09:00:00Z",
+   "why": "",
+   "review": false
+  },
+  {
+   "id": "t21",
+   "name": "trainer",
+   "short": "trainer.py",
+   "purpose": "check 21 passes on the card.",
+   "milestone": "M2",
+   "wave": 2,
+   "lane": "gpu",
+   "state": "building",
+   "depends": [
+    "t20"
+   ],
+   "outputs": [
+    "src/app/trainer.py"
+   ],
+   "elapsed": null,
+   "started": "2026-09-20T08:02:10Z",
+   "merged": null,
+   "added": "2026-09-17T09:00:00Z",
+   "why": "",
+   "review": false
+  },
+  {
+   "id": "t22",
+   "name": "check 22 split rules",
+   "short": "test_split_rules.py",
+   "purpose": "check 22 passes.",
+   "milestone": "M2",
+   "wave": 2,
+   "lane": "cpu",
+   "state": "done",
+   "depends": [
+    "t20"
+   ],
+   "outputs": [
+    "tests/test_split_rules.py"
+   ],
+   "elapsed": null,
+   "started": null,
+   "merged": "2026-09-20T11:30:00Z",
+   "added": "2026-09-17T09:00:00Z",
+   "why": "",
+   "review": false
+  },
+  {
+   "id": "t23",
+   "name": "report",
+   "short": "report.py",
+   "purpose": "check 23 passes.",
+   "milestone": "M2",
+   "wave": 2,
+   "lane": "cpu",
+   "state": "blocked",
+   "depends": [
+    "t20"
+   ],
+   "outputs": [
+    "src/app/report.py"
+   ],
+   "elapsed": null,
+   "started": "2026-09-20T08:02:20Z",
+   "merged": null,
+   "added": "2026-09-17T09:00:00Z",
+   "why": "blocker row",
+   "review": false
+  },
+  {
+   "id": "t24",
+   "name": "export",
+   "short": "export.py",
+   "purpose": "check 24 passes.",
+   "milestone": "M2",
+   "wave": 3,
+   "lane": "cpu",
+   "state": "waiting",
+   "depends": [
+    "t21",
+    "t22"
+   ],
+   "outputs": [
+    "src/app/export.py"
+   ],
+   "elapsed": null,
+   "started": null,
+   "merged": null,
+   "added": "2026-09-17T09:00:00Z",
+   "why": "",
+   "review": false
+  },
+  {
+   "id": "t25",
+   "name": "install.ps1",
+   "short": "install.ps1",
+   "purpose": "check 25 passes.",
+   "milestone": "M2",
+   "wave": 2,
+   "lane": "laptop",
+   "state": "ready",
+   "depends": [
+    "t20"
+   ],
+   "outputs": [
+    "install.ps1"
+   ],
+   "elapsed": null,
+   "started": null,
+   "merged": null,
+   "added": "2026-09-17T09:00:00Z",
+   "why": "",
+   "review": false
+  },
+  {
+   "id": "t29",
+   "name": "review",
+   "short": "review",
+   "purpose": "The review of M2 passes.",
+   "milestone": "M2",
+   "wave": 4,
+   "lane": "cpu",
+   "state": "review",
+   "depends": [
+    "t21",
+    "t23",
+    "t24",
+    "t25"
+   ],
+   "outputs": [
+    "reviews/M2.md"
+   ],
+   "elapsed": null,
+   "started": null,
+   "merged": null,
+   "added": "2026-09-17T09:00:00Z",
+   "why": "",
+   "review": true
+  },
+  {
+   "id": "t30",
+   "name": "handover.md",
+   "short": "handover.md",
+   "purpose": "check 30 passes.",
+   "milestone": "M3",
+   "wave": 1,
+   "lane": "cpu",
+   "state": "waiting",
+   "depends": [
+    "t24"
+   ],
+   "outputs": [
+    "docs/handover.md"
+   ],
+   "elapsed": null,
+   "started": null,
+   "merged": null,
+   "added": "2026-09-19T08:00:00Z",
+   "why": "",
+   "review": false
+  },
+  {
+   "id": "t31",
+   "name": "ui/",
+   "short": "ui/",
+   "purpose": "check 31 passes.",
+   "milestone": "M3",
+   "wave": 2,
+   "lane": "cpu",
+   "state": "waiting",
+   "depends": [
+    "t30"
+   ],
+   "outputs": [
+    "src/app/ui/"
+   ],
+   "elapsed": null,
+   "started": null,
+   "merged": null,
+   "added": "2026-09-19T08:00:00Z",
+   "why": "",
+   "review": false
+  },
+  {
+   "id": "t39",
+   "name": "review",
+   "short": "review",
+   "purpose": "The review of M3 passes.",
+   "milestone": "M3",
+   "wave": 3,
+   "lane": "cpu",
+   "state": "waiting",
+   "depends": [
+    "t30",
+    "t31"
+   ],
+   "outputs": [
+    "reviews/M3.md"
+   ],
+   "elapsed": null,
+   "started": null,
+   "merged": null,
+   "added": "2026-09-19T08:00:00Z",
+   "why": "",
+   "review": true
+  }
+ ],
+ "edges": [
+  {
+   "source": "t10",
+   "target": "t11"
+  },
+  {
+   "source": "t10",
+   "target": "t19"
+  },
+  {
+   "source": "t11",
+   "target": "t19"
+  },
+  {
+   "source": "t19",
+   "target": "t20"
+  },
+  {
+   "source": "t20",
+   "target": "t21"
+  },
+  {
+   "source": "t20",
+   "target": "t22"
+  },
+  {
+   "source": "t20",
+   "target": "t23"
+  },
+  {
+   "source": "t21",
+   "target": "t24"
+  },
+  {
+   "source": "t22",
+   "target": "t24"
+  },
+  {
+   "source": "t20",
+   "target": "t25"
+  },
+  {
+   "source": "t21",
+   "target": "t29"
+  },
+  {
+   "source": "t23",
+   "target": "t29"
+  },
+  {
+   "source": "t24",
+   "target": "t29"
+  },
+  {
+   "source": "t25",
+   "target": "t29"
+  },
+  {
+   "source": "t24",
+   "target": "t30"
+  },
+  {
+   "source": "t30",
+   "target": "t31"
+  },
+  {
+   "source": "t30",
+   "target": "t39"
+  },
+  {
+   "source": "t31",
+   "target": "t39"
+  }
+ ],
+ "sessions": [
+  {
+   "role": "orchestrator",
+   "milestone": "M2",
+   "since": "2026-09-20T08:01:00Z",
+   "window": "orch-M2",
+   "until": null,
+   "outcome": "",
+   "note": "",
+   "last": "2026-09-20T11:59:40Z"
+  },
+  {
+   "role": "healer",
+   "milestone": "M2",
+   "since": "2026-09-20T11:00:00Z",
+   "window": "heal-2",
+   "until": null,
+   "outcome": "",
+   "note": "2/3",
+   "last": "2026-09-20T11:06:00Z"
+  },
+  {
+   "role": "heal cycle",
+   "milestone": "M2",
+   "since": "2026-09-20T09:30:00Z",
+   "window": "heal-1",
+   "until": "2026-09-20T10:15:00Z",
+   "outcome": "blocked",
+   "note": "1/3",
+   "last": null
+  },
+  {
+   "role": "heal cycle",
+   "milestone": "M2",
+   "since": "2026-09-20T11:00:00Z",
+   "window": "heal-2",
+   "until": null,
+   "outcome": "",
+   "note": "2/3",
+   "last": null
+  },
+  {
+   "role": "builder",
+   "milestone": "M2",
+   "since": "2026-09-20T08:02:10Z",
+   "window": "",
+   "until": "2026-09-20T09:00:00Z",
+   "outcome": "",
+   "note": "t21",
+   "last": null
+  },
+  {
+   "role": "builder",
+   "milestone": "M2",
+   "since": "2026-09-20T08:02:20Z",
+   "window": "",
+   "until": null,
+   "outcome": "",
+   "note": "t23",
+   "last": null
+  }
+ ],
+ "usage": {
+  "windows": [
+   {
+    "name": "5h",
+    "percent": 41,
+    "resets": "2h",
+    "reset_at": "2026-09-20T14:00:00Z",
+    "rate": 12.0,
+    "full": "2026-09-20T16:55:00Z"
+   },
+   {
+    "name": "7d",
+    "percent": 78,
+    "resets": "3d",
+    "reset_at": "2026-09-23T12:00:00Z",
+    "rate": 1.5,
+    "full": "2026-09-21T02:40:00Z"
+   }
+  ]
+ },
+ "locks": [
+  {
+   "name": "cpu-1",
+   "holder": "t23",
+   "since": "2026-09-20T11:59:59.763232Z",
+   "lane": "cpu",
+   "live": false
+  },
+  {
+   "name": "main",
+   "holder": "merge of t22",
+   "since": "2026-09-20T11:59:59.763119Z",
+   "lane": "",
+   "live": false
+  }
+ ],
+ "plan": {
+  "waves": [
+   {
+    "milestone": "M2",
+    "n": 1,
+    "tasks": [
+     "t21",
+     "t23",
+     "t25"
+    ],
+    "minutes": 33.0,
+    "paced": 61.0
+   },
+   {
+    "milestone": "M2",
+    "n": 2,
+    "tasks": [
+     "t24"
+    ],
+    "minutes": 31.0,
+    "paced": 59.0
+   },
+   {
+    "milestone": "M2",
+    "n": 3,
+    "tasks": [
+     "t29"
+    ],
+    "minutes": 31.0,
+    "paced": 31.0
+   }
+  ],
+  "critical": [
+   "t21",
+   "t24",
+   "t29"
+  ],
+  "projected": {
+   "M2": {
+    "start": "2026-09-19T12:00:00Z",
+    "end": "2026-09-20T13:31:00Z"
+   },
+   "M3": {
+    "start": "2026-09-20T13:01:00Z",
+    "end": "2026-09-20T15:29:00Z"
+   }
+  },
+  "finish": "2026-09-20T15:29:00Z",
+  "builder_minutes": 45.2,
+  "builder_n": 5,
+  "merge_minutes": 1.0,
+  "merge_n": 0,
+  "lanes": {
+   "cpu": 7,
+   "gpu": 1,
+   "laptop": 1
+  },
+  "builder_samples": [
+   22.0,
+   31.0,
+   40.0,
+   57.8,
+   75.0
+  ],
+  "schedule": {
+   "t21": {
+    "start": "2026-09-20T08:02:10Z",
+    "end": "2026-09-20T12:01:00Z"
+   },
+   "t23": {
+    "start": "2026-09-20T12:00:00Z",
+    "end": "2026-09-20T12:59:00Z"
+   },
+   "t24": {
+    "start": "2026-09-20T12:01:00Z",
+    "end": "2026-09-20T13:01:00Z"
+   },
+   "t25": {
+    "start": "2026-09-20T12:00:00Z",
+    "end": "2026-09-20T13:00:00Z"
+   },
+   "t29": {
+    "start": "2026-09-20T13:01:00Z",
+    "end": "2026-09-20T13:31:00Z"
+   },
+   "t30": {
+    "start": "2026-09-20T13:01:00Z",
+    "end": "2026-09-20T14:00:00Z"
+   },
+   "t31": {
+    "start": "2026-09-20T14:00:00Z",
+    "end": "2026-09-20T14:59:00Z"
+   },
+   "t39": {
+    "start": "2026-09-20T14:59:00Z",
+    "end": "2026-09-20T15:29:00Z"
+   }
+  },
+  "spread": {
+   "M2": {
+    "start": "2026-09-20T12:51:00Z",
+    "end": "2026-09-20T14:46:00Z"
+   },
+   "M3": {
+    "start": "2026-09-20T14:49:00Z",
+    "end": "2026-09-20T16:44:00Z"
+   }
+  },
+  "finish_spread": {
+   "start": "2026-09-20T14:49:00Z",
+   "end": "2026-09-20T16:44:00Z"
+  }
+ },
+ "blockers": [
+  {
+   "id": "1",
+   "task": "t23",
+   "milestone": "M2",
+   "kind": "b",
+   "who": "healer",
+   "since": "2026-09-20",
+   "text": "the report test fails on the column order; class (b), the builder was re-briefed once.",
+   "opened": "2026-09-17T09:00:00Z",
+   "closed": null
+  }
+ ],
+ "events": [
+  {
+   "time": "2026-09-20T08:00:00Z",
+   "source": "driver",
+   "text": "== overnight run 3, deadline 2026-09-20T18:00:00Z",
+   "level": "info",
+   "kind": "log",
+   "outcome": "",
+   "result": ""
+  },
+  {
+   "time": "2026-09-20T08:00:05Z",
+   "source": "driver",
+   "text": "plan of M2: (+2 rows)",
+   "level": "info",
+   "kind": "log",
+   "outcome": "",
+   "result": ""
+  },
+  {
+   "time": "2026-09-20T08:01:01Z",
+   "source": "orchestrator M2",
+   "text": "Run milestone M2.",
+   "level": "info",
+   "kind": "prompt",
+   "outcome": "",
+   "result": ""
+  },
+  {
+   "time": "2026-09-20T08:02:00Z",
+   "source": "orchestrator M2",
+   "text": "Wave 1 of M2: t21 and t23.",
+   "level": "info",
+   "kind": "says",
+   "outcome": "",
+   "result": ""
+  },
+  {
+   "time": "2026-09-20T08:02:11Z",
+   "source": "builder t21",
+   "text": "Build t21 from its brief.",
+   "level": "info",
+   "kind": "prompt",
+   "outcome": "",
+   "result": ""
+  },
+  {
+   "time": "2026-09-20T08:10:01Z",
+   "source": "builder t21",
+   "text": "src/app/trainer.py",
+   "level": "info",
+   "kind": "Write",
+   "outcome": "ok",
+   "result": "File created successfully"
+  },
+  {
+   "time": "2026-09-20T09:00:00Z",
+   "source": "builder t21",
+   "text": "# t21 report\nbuilt; check 21 PASS",
+   "level": "info",
+   "kind": "says",
+   "outcome": "",
+   "result": ""
+  },
+  {
+   "time": "2026-09-20T09:30:00Z",
+   "source": "driver",
+   "text": "HEAL 1/3: M2: blocker row 1 of M2; the healer session starts in tmux window heal-1",
+   "level": "info",
+   "kind": "log",
+   "outcome": "",
+   "result": ""
+  },
+  {
+   "time": "2026-09-20T09:55:00Z",
+   "source": "orchestrator M2",
+   "text": "Build t21 (gpu lane) (builder, default)",
+   "level": "error",
+   "kind": "Agent",
+   "outcome": "failed",
+   "result": "run_checks t22 2026-09-20T09:55Z guard=PASS index=FRESH ruff=0 mypy=0 unit=40p/1f acc=118p/2f/0s ste=PASS -> FAIL"
+  },
+  {
+   "time": "2026-09-20T10:15:00Z",
+   "source": "driver",
+   "text": "HEAL 1/3: M2: the healer ended rc=0 after 45 min with the marker 'blocked'",
+   "level": "info",
+   "kind": "log",
+   "outcome": "",
+   "result": ""
+  },
+  {
+   "time": "2026-09-20T10:40:00Z",
+   "source": "orchestrator M2",
+   "text": "Build t23 (cpu lane) (builder, default)",
+   "level": "info",
+   "kind": "Agent",
+   "outcome": "ok",
+   "result": "run_checks t22 2026-09-20T10:40Z guard=PASS index=FRESH ruff=0 mypy=0 unit=41p acc=120p/0f/0s ste=PASS -> PASS"
+  },
+  {
+   "time": "2026-09-20T11:00:00Z",
+   "source": "driver",
+   "text": "HEAL 2/3: M2: blocker row 1 again; the healer session starts in tmux window heal-2",
+   "level": "info",
+   "kind": "log",
+   "outcome": "",
+   "result": ""
+  },
+  {
+   "time": "2026-09-20T11:00:01Z",
+   "source": "healer",
+   "text": "Heal the blocker of milestone M2, cycle 2 of 3.\n| 1 | t23: the report test fails |",
+   "level": "info",
+   "kind": "prompt",
+   "outcome": "",
+   "result": ""
+  },
+  {
+   "time": "2026-09-20T11:02:00Z",
+   "source": "walker",
+   "text": "the walker starts at S0",
+   "level": "info",
+   "kind": "log",
+   "outcome": "",
+   "result": ""
+  },
+  {
+   "time": "2026-09-20T11:05:00Z",
+   "source": "healer",
+   "text": "Row 1 is class (b): the test is right.",
+   "level": "info",
+   "kind": "says",
+   "outcome": "",
+   "result": ""
+  },
+  {
+   "time": "2026-09-20T11:05:00Z",
+   "source": "walker",
+   "text": "S3 reached",
+   "level": "info",
+   "kind": "log",
+   "outcome": "",
+   "result": ""
+  },
+  {
+   "time": "2026-09-20T11:05:00Z",
+   "source": "walker",
+   "text": "verdict OPERATOR_WALK: PASS",
+   "level": "info",
+   "kind": "log",
+   "outcome": "",
+   "result": ""
+  },
+  {
+   "time": "2026-09-20T11:30:00Z",
+   "source": "merge",
+   "text": "merging t22 onto main",
+   "level": "info",
+   "kind": "log",
+   "outcome": "",
+   "result": ""
+  },
+  {
+   "time": "2026-09-20T11:31:00Z",
+   "source": "orchestrator M2",
+   "text": "git commit -m \"t22: the split rules test\"",
+   "level": "error",
+   "kind": "Bash",
+   "outcome": "failed",
+   "result": "the gate did not pass: 1 failed"
+  },
+  {
+   "time": "2026-09-20T11:32:00Z",
+   "source": "orchestrator M2",
+   "text": "t23 is held by blocker row 1.",
+   "level": "info",
+   "kind": "says",
+   "outcome": "",
+   "result": ""
+  }
+ ]
+}

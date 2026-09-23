@@ -1,0 +1,193 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "tmux_tui_dashboard/feed.schema.json",
+  "title": "dash feed",
+  "description": "The JSON feed of the build dashboard: the model of tmux_tui_dashboard/model.py as JSON. A project writes this file and starts the three panes with TMUX_TUI_DASHBOARD_SOURCE=json:<path>. Times are ISO 8601 in UTC with a Z. Durations are minutes. Ids are plain strings; the panes compare them and never parse them. A key the model does not know is passed over; a key that is left out takes its default.",
+  "type": "object",
+  "required": ["tasks"],
+  "properties": {
+    "schema": {"const": "dash-feed/1", "description": "The version of this schema."},
+    "project": {"$ref": "#/$defs/project"},
+    "milestones": {"type": "array", "items": {"$ref": "#/$defs/milestone"}, "description": "In plan order: the order of the columns, the rows and the colours."},
+    "tasks": {"type": "array", "items": {"$ref": "#/$defs/task"}, "description": "In plan order: a task comes after every task it depends on."},
+    "edges": {"type": "array", "items": {"$ref": "#/$defs/edge"}, "description": "Every depends-on relation. The depends list of each task adds the edges this list does not name."},
+    "sessions": {"type": "array", "items": {"$ref": "#/$defs/session"}},
+    "usage": {"oneOf": [{"$ref": "#/$defs/usage"}, {"type": "null"}], "description": "null when it is not known: the pane then says unknown and never shows an old figure."},
+    "locks": {"type": "array", "items": {"$ref": "#/$defs/lock"}, "description": "The locks that are held now."},
+    "plan": {"$ref": "#/$defs/plan"},
+    "blockers": {"type": "array", "items": {"$ref": "#/$defs/blocker"}, "description": "The open blocker rows, in the order the top pane lists them."},
+    "events": {"type": "array", "items": {"$ref": "#/$defs/event"}, "description": "The stream, oldest first. Keep the newest few hundred; the pane shows each new event once."}
+  },
+  "$defs": {
+    "time": {"type": ["string", "null"], "description": "ISO 8601 in UTC, for example 2026-09-20T12:00:00Z; null when not known."},
+    "state": {"enum": ["done", "building", "merging", "review", "ready", "waiting", "blocked", "healing", "pulled"]},
+    "window": {
+      "type": "object",
+      "properties": {"start": {"$ref": "#/$defs/time"}, "end": {"$ref": "#/$defs/time", "description": "null while the window is open."}}
+    },
+    "project": {
+      "type": "object",
+      "properties": {
+        "name": {"type": "string"},
+        "now": {"$ref": "#/$defs/time", "description": "When the feed was written. The panes draw with their own clock and keep this as the time of the data."},
+        "head": {"type": "string", "description": "The commit on the main branch, as the status row shows it."},
+        "tags": {"type": "array", "items": {"type": "string"}, "description": "The milestone tags; the status row counts them."},
+        "focus": {"type": "string", "description": "The id of the milestone the build works on now. Empty: the first milestone that is not done."},
+        "seeded": {"$ref": "#/$defs/time", "description": "When the plan was first written: the start of `spent` in the middle pane."},
+        "gate": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/gate"}], "description": "The newest whole gate: the gate row shows its steps, its verdict, its time and its task."},
+        "gates": {"type": "array", "items": {"$ref": "#/$defs/gate"}, "description": "The whole gates of the last 24 hours, oldest first: one cell each on the gate row."},
+        "blocker_rows": {"type": "array", "items": {"$ref": "#/$defs/blocker"}, "description": "Every blocker row the build has held, open and closed, oldest first, with opened and closed: the row `held` of the chart and the counts of the row `24 h`."},
+        "run": {"$ref": "#/$defs/window", "description": "The run of the driver: its start, and its deadline as the end."},
+        "last_activity": {"$ref": "#/$defs/time", "description": "The newest action of any session: `nothing runs since`."},
+        "walks": {"type": "array", "items": {"$ref": "#/$defs/walk"}, "description": "The newest walks, newest first."}
+      }
+    },
+    "gate": {
+      "type": "object",
+      "properties": {
+        "time": {"$ref": "#/$defs/time"}, "subject": {"type": "string", "description": "What the gate ran for, a task id."},
+        "passed": {"type": "boolean"},
+        "steps": {"type": "array", "items": {"enum": ["pass", "fail", "skip"]}, "description": "The verdict of each step, in run order: guard, index, ruff, mypy, unit, acceptance, string lint."},
+        "acceptance": {"type": "integer", "description": "The acceptance tests that passed."}
+      }
+    },
+    "milestone": {
+      "type": "object",
+      "required": ["id"],
+      "properties": {
+        "id": {"type": "string"},
+        "title": {"type": "string"},
+        "purpose": {"type": "string", "description": "One sentence: what the milestone is for."},
+        "planned": {"$ref": "#/$defs/window", "description": "The window its plan gives it: its start, and the start plus its planned minutes."},
+        "actual": {"$ref": "#/$defs/window", "description": "Its first task landed, and its tag (null while it is open)."},
+        "tasks": {"type": "array", "items": {"type": "string"}, "description": "Its task ids. Empty: the tasks whose milestone is this id."},
+        "state": {"enum": ["done", "building", "blocked", "healing", "waiting"]},
+        "minutes": {"type": "number", "description": "What its own plan costs with nothing done."},
+        "blockers": {"type": "integer", "description": "The open blocker rows that hold it."}
+      }
+    },
+    "task": {
+      "type": "object",
+      "required": ["id"],
+      "properties": {
+        "id": {"type": "string"},
+        "name": {"type": "string", "description": "The name its box shows, in words. It wraps inside the box and is never cut."},
+        "short": {"type": "string", "description": "The name a one-line list shows, often a file name."},
+        "purpose": {"type": "string"},
+        "milestone": {"type": "string"},
+        "wave": {"type": ["integer", "null"], "description": "Its wave in its milestone's own plan with nothing done: the done boxes count finished waves by it."},
+        "lane": {"type": "string", "description": "The kind of slot it builds in: the lock lanes of the plan."},
+        "state": {"$ref": "#/$defs/state"},
+        "depends": {"type": "array", "items": {"type": "string"}},
+        "outputs": {"type": "array", "items": {"type": "string"}},
+        "elapsed": {"type": ["number", "null"], "description": "Minutes in flight, used only when started is null."},
+        "started": {"$ref": "#/$defs/time", "description": "When a builder took it; the panes count its elapsed time from this."},
+        "merged": {"$ref": "#/$defs/time", "description": "When it landed: the done frontier of the graph shows the newest first; the estimate counts the merges of the last 72 hours for the merge rate."},
+        "added": {"$ref": "#/$defs/time", "description": "When its row entered the plan: the burn-up rows of its milestone count the rows it held at each day."},
+        "why": {"type": "string", "description": "Why it is where it is. Shown in its box in place of the reason the panes derive."},
+        "review": {"type": "boolean", "description": "A review row: its lane shows as main."}
+      }
+    },
+    "edge": {
+      "type": "object",
+      "required": ["source", "target"],
+      "properties": {"source": {"type": "string", "description": "The task that lands first."}, "target": {"type": "string", "description": "The task that waits for it."}}
+    },
+    "session": {
+      "type": "object",
+      "required": ["role"],
+      "properties": {
+        "role": {"type": "string", "description": "orchestrator, healer or walker for a session that runs; `heal cycle` for a past healer run; `builder`, `merge` and `review` for the runs of a task (the note names it): the hours column of the chart and its last 12 hours."},
+        "milestone": {"type": "string"},
+        "since": {"$ref": "#/$defs/time"},
+        "window": {"type": "string", "description": "Where a person can watch it."},
+        "until": {"$ref": "#/$defs/time", "description": "null while it runs."},
+        "outcome": {"type": "string", "description": "How a past run ended: done, blocked, none."},
+        "note": {"type": "string", "description": "A short fact, such as 2/3 for the second of three heal cycles."},
+        "last": {"$ref": "#/$defs/time", "description": "Its last sign of life: the time of its newest action."}
+      }
+    },
+    "usage": {
+      "type": "object",
+      "properties": {"windows": {"type": "array", "items": {"type": "object", "required": ["name"], "properties": {"name": {"type": "string", "description": "5h, 7d"}, "percent": {"type": "integer"}, "resets": {"type": "string", "description": "When it resets, for example 3h."}, "reset_at": {"$ref": "#/$defs/time", "description": "When it resets, as a time."}, "rate": {"type": ["number", "null"], "description": "Per cent an hour, measured; null until it is measured."}, "full": {"$ref": "#/$defs/time", "description": "When it reaches 100 per cent at that rate: orange when that comes before its reset."}}}}}
+    },
+    "lock": {
+      "type": "object",
+      "required": ["name"],
+      "properties": {
+        "name": {"type": "string", "description": "A lock whose name starts with main is the main lock of the status row."},
+        "holder": {"type": "string", "description": "Who holds it, in words: merge of t21."},
+        "since": {"$ref": "#/$defs/time"},
+        "lane": {"type": "string", "description": "The lane of a slot: the status row counts the slots of each lane."},
+        "live": {"type": "boolean", "description": "False when the process that holds it is gone: drawn gone, counted nowhere."}
+      }
+    },
+    "blocker": {
+      "type": "object",
+      "required": ["id"],
+      "properties": {
+        "id": {"type": "string", "description": "Its number."},
+        "task": {"type": "string", "description": "The task it holds; empty when it names none."},
+        "milestone": {"type": "string"},
+        "kind": {"type": "string", "description": "Its class: a, b, c, or ?."},
+        "who": {"type": "string", "description": "Who answers it."},
+        "since": {"type": "string", "description": "The date it was opened, as written."},
+        "text": {"type": "string", "description": "Its first sentence."},
+        "opened": {"$ref": "#/$defs/time", "description": "The commit that added the row: the age on the border of the box it holds."},
+        "closed": {"$ref": "#/$defs/time", "description": "The commit that took the row away; null while it is open."}
+      }
+    },
+    "wave": {
+      "type": "object",
+      "required": ["milestone"],
+      "properties": {
+        "milestone": {"type": "string", "description": "The milestone whose run holds the wave."},
+        "n": {"type": "integer"},
+        "tasks": {"type": "array", "items": {"type": "string"}, "description": "Its open task ids."},
+        "minutes": {"type": "number", "description": "At the planner's terms."},
+        "paced": {"type": "number", "description": "At the pace measured on this build."}
+      }
+    },
+    "plan": {
+      "type": "object",
+      "properties": {
+        "waves": {"type": "array", "items": {"$ref": "#/$defs/wave"}, "description": "The open waves of each open milestone, in the order they run."},
+        "critical": {"type": "array", "items": {"type": "string"}, "description": "The tasks on the critical path to each open milestone's tag."},
+        "projected": {"type": "object", "additionalProperties": {"$ref": "#/$defs/window"}, "description": "Milestone id to its projected window, for each milestone that is not done."},
+        "finish": {"$ref": "#/$defs/time", "description": "The projected finish of every open task."},
+        "builder_minutes": {"type": "number"},
+        "builder_n": {"type": "integer", "description": "How many builder runs the figure is measured on; 0: the planner's own term."},
+        "merge_minutes": {"type": "number"},
+        "merge_n": {"type": "integer"},
+        "lanes": {"type": "object", "additionalProperties": {"type": "integer"}, "description": "Lane to its slots, in the order the status row shows them."},
+        "builder_samples": {"type": "array", "items": {"type": "number"}, "description": "The minutes of each measured builder run: the estimate shows their p25 and p75."},
+        "schedule": {"type": "object", "additionalProperties": {"$ref": "#/$defs/window"}, "description": "Task id to its projected window: the start of its build and its landing. A wave's window is the first start and the last landing of its open tasks; a milestone's tag and the finish are the last landing of theirs."},
+        "spread": {"type": "object", "additionalProperties": {"$ref": "#/$defs/window"}, "description": "Milestone id to the window its tag falls in: its tag at the p25 and at the p75 builder minutes. Empty with fewer than two samples."},
+        "finish_spread": {"$ref": "#/$defs/window", "description": "The finish of every open task at the p25 and at the p75 builder minutes: the range the estimate row shows."}
+      }
+    },
+    "walk": {
+      "type": "object",
+      "required": ["name"],
+      "properties": {
+        "name": {"type": "string"}, "task": {"type": "string"}, "start": {"$ref": "#/$defs/time"},
+        "end": {"$ref": "#/$defs/time"}, "depth": {"type": "string", "description": "The deepest stage reached."},
+        "stages": {"type": "object", "additionalProperties": {"type": "integer"}, "description": "Stage to the screens spent there."},
+        "notes": {"type": "integer"}, "last": {"type": "string", "description": "The last screen: its stage and heading."},
+        "verdict": {"type": "string", "description": "PASS, FAIL, or empty when the walk gave none."}
+      }
+    },
+    "event": {
+      "type": "object",
+      "properties": {
+        "time": {"type": "string", "description": "ISO 8601 UTC; empty takes the minute the pane reads it."},
+        "source": {"type": "string", "description": "Who did it; the first word picks the colour: driver, orchestrator, builder, healer, walker, merge."},
+        "text": {"type": "string"},
+        "level": {"enum": ["info", "error"]},
+        "kind": {"type": "string", "description": "log, says, result, prompt, heartbeat, error, reset (the pane starts a new backlog), divider (a rule of ═: a wave recorded, a tag), or a tool name."},
+        "outcome": {"type": "string", "description": "For a tool call with its result: ok, failed or timed out, drawn first as ✔, ✖ or the words. A tool event with no outcome and no result is a call in flight: the pinned row under the stream shows it."},
+        "result": {"type": "string", "description": "The first line of that result, drawn in grey after the call."}
+      }
+    }
+  }
+}
